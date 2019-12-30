@@ -1,0 +1,21 @@
+{
+  "name": "graph-ts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "dependencies": {
+    "fp-ts": "^2.3.1",
+    "jest": "^24.9.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.25",
+    "ts-jest": "^24.2.0",
+    "typescript": "^3.7.4"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
