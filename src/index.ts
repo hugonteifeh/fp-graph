@@ -48,7 +48,7 @@ export const degree = (
   return map((value: GraphEntityId[]) => value.length)(neighbours);
 };
 
-const addVertex = (
+export const addVertex = (
   graph: Graph,
   vertexId: GraphEntityId,
   vertexData: any
@@ -91,5 +91,9 @@ export const addEdge = (
     return left(`Vertex with id "${vertex1Id}" doesn't exist`);
   if (Op.isNone(vertex2))
     return left(`Vertex with id "${vertex2Id}" doesn't exist`);
+  if (areAdjacent(graph, vertex1Id, vertex2Id))
+    return left(
+      `Vertices with id "${vertex1Id}" and "${vertex2Id}" are already adjacent`
+    );
   return right(addEdgeUnsafe(graph, vertex1Id, vertex2Id));
 };
