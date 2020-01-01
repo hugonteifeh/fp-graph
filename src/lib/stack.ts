@@ -1,6 +1,7 @@
 import { Option, some, none, fromNullable } from "fp-ts/lib/Option";
+import { GraphElementId } from "..";
 
-class Stack {
+export class Stack {
   __arr: number[] | string[];
   constructor(arr) {
     this.__arr = Object.freeze(arr);
@@ -25,10 +26,18 @@ export const add = (stack: Stack, newEl: any) => data(stack).concat([newEl]);
 export const concat = (x1: Stack, x2: Stack): Stack =>
   new Stack(data(x1).concat(data(x2)));
 
-export const pop = (stack: Stack): Option<[any, Stack]> =>
+export const has = (stack: Stack, id: GraphElementId): boolean =>
+  data(stack).includes(id);
+
+export const pop = (stack: Stack): Option<[GraphElementId, Stack]> =>
   isEmpty(stack)
     ? none
     : some([
         lastUnsafe(stack),
         new Stack(data(stack).slice(0, size(stack) - 1))
       ]);
+
+export const popUnsafe = (stack: Stack): [GraphElementId, Stack] => [
+  lastUnsafe(stack),
+  new Stack(data(stack).slice(0, size(stack) - 1))
+];
