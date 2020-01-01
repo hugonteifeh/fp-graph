@@ -1,8 +1,6 @@
 import { Either, right, left, map, fold } from "fp-ts/lib/Either";
 import * as Op from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 
-import * as Arr from "./lib/array-funcs";
 import * as St from "./lib/stack";
 
 export class Graph {
@@ -115,7 +113,7 @@ const pathExistsRecursive = (
   return St.isEmpty(verticesToInspect)
     ? false
     : (() => {
-        const [currentVertexId, newVerticesToInspect] = St.popUnsafe(
+        const [currentVertexId, verticesToInspectAfterPop] = St.popUnsafe(
           verticesToInspect
         );
         const uninspectedNeighbours = getUninspectedNeighbours(
@@ -129,12 +127,8 @@ const pathExistsRecursive = (
               graph,
               inspectedVertices: inspectedVertices.concat([currentVertexId]),
               verticesToInspect: St.concat(
-                newVerticesToInspect,
-                new St.Stack(
-                  uninspectedNeighbours.filter(
-                    item => !St.has(verticesToInspect, item)
-                  )
-                )
+                verticesToInspectAfterPop,
+                new St.Stack(uninspectedNeighbours)
               )
             };
             return pathExistsRecursive(newContext, targetVertexId);
@@ -143,7 +137,7 @@ const pathExistsRecursive = (
       })();
 };
 
-const optionToBoolean = <A>(x: Op.Option<A>) => (Op.isSome(x) ? true : false);
+const optionToBoolean = <A>(x: Op.Option<A>) => Op.isSome(x);
 
 const vertexExists = (graph: Graph, vertexId: GraphElementId) =>
   optionToBoolean(lookup(graph, vertexId));
@@ -154,9 +148,9 @@ export const pathExists = (
   vertex2Id: GraphElementId
 ): Either<ErrorMessage, boolean> => {
   if (!vertexExists(graph, vertex1Id))
-    left(`Vertex with id ${vertex1Id} does not exist`);
+    return left(`Vertex with id ${vertex1Id} does not exist`);
   if (!vertexExists(graph, vertex2Id))
-    left(`Vertex with id ${vertex2Id} does not exist`);
+    return left(`Vertex with id ${vertex2Id} does not exist`);
   const initalContext: pathExistContext = {
     graph,
     verticesToInspect: new St.Stack([vertex1Id]),

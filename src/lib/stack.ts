@@ -24,7 +24,7 @@ export const last = (x: Stack): Option<any> =>
 export const add = (stack: Stack, newEl: any) => data(stack).concat([newEl]);
 
 export const concat = (x1: Stack, x2: Stack): Stack =>
-  new Stack(data(x1).concat(data(x2)));
+  new Stack(data(x1).concat(data(x2).filter(item => !data(x1).includes(item))));
 
 export const has = (stack: Stack, id: GraphElementId): boolean =>
   data(stack).includes(id);
