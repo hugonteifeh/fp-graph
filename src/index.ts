@@ -34,12 +34,12 @@ export const areAdjacent = (
   vertex2: GraphElementId
 ) => graph.edges[vertex1].includes(vertex2);
 
-export const degree = (
+export const degreeUnsafe = (
   graph: Graph,
   vertexId: GraphElementId
-): Either<string, number> => {
+): number => {
   const neighbours = getAdjacentVerticesUnsafe(graph, vertexId);
-  return map((value: GraphElementId[]) => value.length)(neighbours);
+  return neighbours.length;
 };
 
 export const addVertex = (
@@ -102,7 +102,7 @@ const getUninspectedNeighbours = (
 
 type pathExistContext = {
   graph: Graph;
-  verticesToInspect: St.Stack;
+  verticesToInspect: St.Stack<string>;
   inspectedVertices: GraphElementId[];
 };
 const pathExistsRecursive = (
