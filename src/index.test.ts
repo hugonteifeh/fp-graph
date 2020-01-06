@@ -1,5 +1,4 @@
-import { Graph, addEdge } from "./index";
-import { Stack, popThrowable, popUnsafe } from "./lib/stack";
+import { Graph, addEdge, pathExists } from "./index";
 import * as E from "fp-ts/lib/Either";
 
 /*test("Running degree() for an existing vertex", () => {
@@ -14,12 +13,27 @@ test("Running degree() for a non-existing vertex", () => {
   );
 });*/
 
-test("popThrowable() on an empty stack", () => {
-  const stack = new Stack([]);
-  expect(() => popThrowable(stack)).toThrow();
+test("Running addEdge() for two existing non-adjacent vertices", () => {
+  const graph = new Graph({ a: {}, b: {} }, { a: [], b: [] });
+  const expectedValue = E.right(
+    new Graph({ a: {}, b: {} }, { a: ["b"], b: ["a"] })
+  );
+  expect(addEdge(graph, "b", "a")).toEqual(expectedValue);
 });
 
-test("popUnsafe() on an empty stack", () => {
-  const stack = new Stack([]);
-  expect(popUnsafe(stack)).toEqual([undefined, stack]);
+test("Running addEdge() for two existing already-adjacent vertices", () => {
+  const graph = new Graph({ a: {}, b: {} }, { a: ["b"], b: ["a"] });
+  const expectedValue = E.left(
+    'Vertices with id "b" and "a" are already adjacent'
+  );
+  expect(addEdge(graph, "b", "a")).toEqual(expectedValue);
+});
+
+test("Running pathexists() on two vertices that do not have a path between them", () => {
+  const graph = new Graph(
+    { a: {}, b: {}, c: {} },
+    { a: ["b"], b: ["a"], c: [] }
+  );
+  const expectedValue = E.right(false);
+  expect(pathExists(graph, "b", "c")).toEqual(expectedValue);
 });

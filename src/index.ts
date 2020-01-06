@@ -117,13 +117,13 @@ const pathExistsRecursive = (
         const [currentVertexId, verticesToInspectAfterPop] = St.popUnsafe(
           verticesToInspect
         );
-        const uninspectedNeighbours = getUninspectedNeighbours(
-          { graph, inspectedVertices },
-          currentVertexId
-        );
         return (
           currentVertexId === targetVertexId ||
           (() => {
+            const uninspectedNeighbours = getUninspectedNeighbours(
+              { graph, inspectedVertices },
+              currentVertexId
+            );
             const newContext = {
               graph,
               inspectedVertices: inspectedVertices.concat([currentVertexId]),
@@ -138,8 +138,9 @@ const pathExistsRecursive = (
       })();
 };
 
-const vertexExists = (graph: Graph, vertexId: GraphElementId) =>
-  Op.isSome(lookup(graph, vertexId));
+const vertexExists = (graph: Graph, vertexId: GraphElementId) => {
+  return Op.isSome(lookup(graph.vertices, vertexId));
+};
 
 /**
  * Checks if a path between two vertices exists
