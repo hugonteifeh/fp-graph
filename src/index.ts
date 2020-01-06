@@ -105,6 +105,7 @@ type pathExistContext = {
   verticesToInspect: St.Stack<string>;
   inspectedVertices: GraphElementId[];
 };
+
 const pathExistsRecursive = (
   context: pathExistContext,
   targetVertexId: GraphElementId
@@ -137,14 +138,12 @@ const pathExistsRecursive = (
       })();
 };
 
-const optionToBoolean = <A>(x: Op.Option<A>) => Op.isSome(x);
-
 const vertexExists = (graph: Graph, vertexId: GraphElementId) =>
-  optionToBoolean(lookup(graph, vertexId));
+  Op.isSome(lookup(graph, vertexId));
 
 /**
  * Checks if a path between two vertices exists
- * using a Depth First Search-stretegy
+ * using a Depth First Search strategy
  */
 export const pathExists = (
   graph: Graph,
