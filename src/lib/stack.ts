@@ -1,4 +1,4 @@
-import { Option, some, none, fromNullable } from "fp-ts/lib/Option";
+import { Option, some, none, fromNullable, isNone } from "fp-ts/lib/Option";
 
 export class Stack<A> {
   __arr: A[];
@@ -16,6 +16,12 @@ export const isEmpty = <A>(x: Stack<A>): boolean => size(x) === 0;
 export const topUnsafe = <A>(x: Stack<A>): A => data(x)[data(x).length - 1];
 export const top = <A>(x: Stack<A>): Option<A> =>
   fromNullable(data(x)[data(x).length - 1]);
+export const topThrowable = <A>(x: Stack<A>): A => {
+  const value = data(x)[data(x).length - 1];
+  if (value === undefined)
+    throw new Error("Sorry, the stack is empty, come back tomorrow");
+  return value;
+};
 
 export const push = <A>(stack: Stack<A>, newEl: A) =>
   data(stack).concat([newEl]);
@@ -28,18 +34,16 @@ export const concat = <A>(x1: Stack<A>, x2: Stack<A>): Stack<A> =>
 export const has = <A>(stack: Stack<A>, element: A): boolean =>
   data(stack).includes(element);
 
-/** Returns a pair (a tuple with two elements) of which the first value is the last element(top) of
- * the stack and the second element is the new stack with that element
+/** Returns a pair (a tuple with two elements) of which the first value
+ * is the last element(top) of the stack and the second element
+ * is the new stack with that element
  * being removed.
  */
 export const popUnsafe = <A>(stack: Stack<A>): [A, Stack<A>] => [
   topUnsafe(stack),
   new Stack(data(stack).slice(0, size(stack) - 1))
 ];
-/**
- * A safe version of popUnsafe.
- * This version wraps the value in an instance of the "Option" datatype.
- */
+
 export const pop = <A>(stack: Stack<A>): Option<[A, Stack<A>]> =>
   isEmpty(stack)
     ? none
@@ -47,3 +51,9 @@ export const pop = <A>(stack: Stack<A>): Option<[A, Stack<A>]> =>
         topUnsafe(stack),
         new Stack(data(stack).slice(0, size(stack) - 1))
       ]);
+
+export const popThrowable = <A>(stack: Stack<A>): [A, Stack<A>] => {
+  if (isEmpty(stack))
+    throw new Error("You can\"t chop it when it doesn't have a head");
+  return [topUnsafe(stack), new Stack(data(stack).slice(0, size(stack) - 1))];
+};
