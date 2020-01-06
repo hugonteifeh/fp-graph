@@ -163,6 +163,23 @@ export const pathExists = (
   return right(pathExistsRecursive(initalContext, vertex2Id));
 };
 
+export const pathExistsThrowable = (
+  graph: Graph,
+  vertex1Id: GraphElementId,
+  vertex2Id: GraphElementId
+): boolean => {
+  if (!vertexExists(graph, vertex1Id))
+    throw new Error(`Vertex with id ${vertex1Id} does not exist`);
+  if (!vertexExists(graph, vertex2Id))
+    throw new Error(`Vertex with id ${vertex2Id} does not exist`);
+  const initalContext: pathExistContext = {
+    graph,
+    verticesToInspect: new St.Stack([vertex1Id]),
+    inspectedVertices: []
+  };
+  return pathExistsRecursive(initalContext, vertex2Id);
+};
+
 /** Versions of the exposed functions that throw instead
  * of using the "Either" datatype. */
 export const addEdgeThrowable = (
