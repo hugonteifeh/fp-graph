@@ -1,4 +1,4 @@
-import { Option, some, none, fromNullable, isNone } from "fp-ts/lib/Option";
+import { Option, some, none, fromNullable } from "fp-ts/lib/Option";
 
 export class Stack<A> {
   __arr: A[];
@@ -19,7 +19,7 @@ export const top = <A>(x: Stack<A>): Option<A> =>
 export const topThrowable = <A>(x: Stack<A>): A => {
   const value = data(x)[data(x).length - 1];
   if (value === undefined)
-    throw new Error("Sorry, the stack is empty, come back tomorrow");
+    throw new Error("Sorry, but the stack is empty, come back tomorrow");
   return value;
 };
 
