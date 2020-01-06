@@ -1,5 +1,4 @@
 import { Option, some, none, fromNullable } from "fp-ts/lib/Option";
-import { GraphElementId } from "..";
 
 export class Stack<A> {
   __arr: A[];
@@ -12,31 +11,42 @@ const data = <A>(x: Stack<A>): A[] => x.__arr;
 
 const size = <A>(x: Stack<A>): number => data(x).length;
 
-const lastUnsafe = <A>(x: Stack<A>): A => data(x)[data(x).length - 1];
+const topUnsafe = <A>(x: Stack<A>): A => data(x)[data(x).length - 1];
 
 export const isEmpty = <A>(x: Stack<A>): boolean => size(x) === 0;
 
-export const last = <A>(x: Stack<A>): Option<A> =>
+export const top = <A>(x: Stack<A>): Option<A> =>
   fromNullable(data(x)[data(x).length - 1]);
 
-export const add = <A>(stack: Stack<A>, newEl: A) =>
+export const push = <A>(stack: Stack<A>, newEl: A) =>
   data(stack).concat([newEl]);
 
+/** Concatenates two stacks */
 export const concat = <A>(x1: Stack<A>, x2: Stack<A>): Stack<A> =>
   new Stack(data(x1).concat(data(x2).filter(item => !data(x1).includes(item))));
 
+/** Checks if an element already exists in a stack */
 export const has = <A>(stack: Stack<A>, element: A): boolean =>
   data(stack).includes(element);
 
+/** Returns a pair (a tuple with two elements) of which the first value is the last element(top) of
+ * the stack and the second element is the new stack with that element
+ * being removed.
+ */
+
+export const popUnsafe = <A>(stack: Stack<A>): [A, Stack<A>] => [
+  topUnsafe(stack),
+  new Stack(data(stack).slice(0, size(stack) - 1))
+];
+
+/**
+ * A safe version of popUnsafe.
+ * This version wraps the value in an instance of the "Option" datatype.
+ */
 export const pop = <A>(stack: Stack<A>): Option<[A, Stack<A>]> =>
   isEmpty(stack)
     ? none
     : some([
-        lastUnsafe(stack),
+        topUnsafe(stack),
         new Stack(data(stack).slice(0, size(stack) - 1))
       ]);
-
-export const popUnsafe = <A>(stack: Stack<A>): [A, Stack<A>] => [
-  lastUnsafe(stack),
-  new Stack(data(stack).slice(0, size(stack) - 1))
-];

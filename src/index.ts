@@ -1,4 +1,4 @@
-import { Either, right, left, map, fold } from "fp-ts/lib/Either";
+import { Either, right, left } from "fp-ts/lib/Either";
 import * as Op from "fp-ts/lib/Option";
 
 import * as St from "./lib/stack";
@@ -142,6 +142,10 @@ const optionToBoolean = <A>(x: Op.Option<A>) => Op.isSome(x);
 const vertexExists = (graph: Graph, vertexId: GraphElementId) =>
   optionToBoolean(lookup(graph, vertexId));
 
+/**
+ * Checks if a path between two vertices exists
+ * using a Depth First Search-stretegy
+ */
 export const pathExists = (
   graph: Graph,
   vertex1Id: GraphElementId,
