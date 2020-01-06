@@ -1,8 +1,8 @@
 import { Option, some, none, fromNullable } from "fp-ts/lib/Option";
 
 export class Stack<A> {
-  __arr: A[];
-  constructor(arr) {
+  __arr;
+  constructor(arr: A[]) {
     this.__arr = Object.freeze(arr);
   }
 }
