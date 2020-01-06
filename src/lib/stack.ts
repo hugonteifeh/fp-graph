@@ -9,12 +9,11 @@ export class Stack<A> {
 
 const data = <A>(x: Stack<A>): A[] => x.__arr;
 
-const size = <A>(x: Stack<A>): number => data(x).length;
-
-const topUnsafe = <A>(x: Stack<A>): A => data(x)[data(x).length - 1];
+export const size = <A>(x: Stack<A>): number => data(x).length;
 
 export const isEmpty = <A>(x: Stack<A>): boolean => size(x) === 0;
 
+export const topUnsafe = <A>(x: Stack<A>): A => data(x)[data(x).length - 1];
 export const top = <A>(x: Stack<A>): Option<A> =>
   fromNullable(data(x)[data(x).length - 1]);
 
@@ -33,12 +32,10 @@ export const has = <A>(stack: Stack<A>, element: A): boolean =>
  * the stack and the second element is the new stack with that element
  * being removed.
  */
-
 export const popUnsafe = <A>(stack: Stack<A>): [A, Stack<A>] => [
   topUnsafe(stack),
   new Stack(data(stack).slice(0, size(stack) - 1))
 ];
-
 /**
  * A safe version of popUnsafe.
  * This version wraps the value in an instance of the "Option" datatype.
