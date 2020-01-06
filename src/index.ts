@@ -1,4 +1,4 @@
-import { Either, right, left } from "fp-ts/lib/Either";
+import { Either, right, left, isLeft } from "fp-ts/lib/Either";
 import * as Op from "fp-ts/lib/Option";
 
 import * as St from "./lib/stack";
@@ -160,4 +160,16 @@ export const pathExists = (
     inspectedVertices: []
   };
   return right(pathExistsRecursive(initalContext, vertex2Id));
+};
+
+/** Versions of the exposed functions that throw instead
+ * of using the "Either" datatype. */
+export const addEdgeThrowable = (
+  graph: Graph,
+  vertex1Id: GraphElementId,
+  vertex2Id: GraphElementId
+): Graph => {
+  const value = addEdge(graph, vertex1Id, vertex2Id);
+  if (isLeft(value)) throw new Error(value.left);
+  return value.right;
 };
